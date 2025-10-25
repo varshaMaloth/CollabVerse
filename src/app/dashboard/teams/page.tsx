@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useCollection } from '@/firebase';
+import { useCollection, useUser } from '@/firebase';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { UserProfile } from '@/lib/types';
@@ -44,11 +43,13 @@ function UserCardSkeleton() {
 export default function TeamsPage() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { data: currentUser } = useUser();
   const usersCollectionRef = collection(firestore, 'users');
   const { data: users, loading } = useCollection<UserProfile>(usersCollectionRef);
 
   // Helper to generate a consistent number from a string (like a UID)
   const getStableNumber = (str: string, max: number) => {
+    if (!str) return 0;
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
@@ -86,7 +87,9 @@ export default function TeamsPage() {
                     <UserCardSkeleton />
                 </>
             )}
-            {users && users.map((user) => (
+            {users && users.map((user) => {
+              const isCurrentUser = user.uid === currentUser?.uid;
+              return (
               <Card key={user.uid} className="flex flex-col">
                 <CardContent className="flex flex-col items-center p-6 text-center">
                   <Avatar className="h-20 w-20 mb-4">
@@ -102,6 +105,7 @@ export default function TeamsPage() {
                       variant="outline" 
                       size="sm"
                       onClick={() => handleActionClick('Connection Request Sent', `You sent a connection request to ${user.displayName}.`)}
+                      disabled={isCurrentUser}
                     >
                     <UserPlus className="mr-2 h-4 w-4" />
                     Connect
@@ -110,6 +114,7 @@ export default function TeamsPage() {
                       variant="outline" 
                       size="sm"
                       onClick={() => handleActionClick('Message Sent', `Your message to ${user.displayName} has been sent.`)}
+                      disabled={isCurrentUser}
                     >
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Message
@@ -119,6 +124,7 @@ export default function TeamsPage() {
                       size="sm" 
                       className="col-span-2"
                       onClick={() => handleActionClick('Feedback Submitted', `Your feedback for ${user.displayName} has been submitted.`)}
+                      disabled={isCurrentUser}
                     >
                     <Star className="mr-2 h-4 w-4" />
                     Give Feedback
@@ -131,7 +137,7 @@ export default function TeamsPage() {
                     </span>
                  </div>
               </Card>
-            ))}
+            )})}
           </div>
         </CardContent>
       </Card>

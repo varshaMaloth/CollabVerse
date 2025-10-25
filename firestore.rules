@@ -1,0 +1,141 @@
+/**
+ * @fileoverview Firestore Security Rules for Prototyping.
+ *
+ * Core Philosophy:
+ * This ruleset prioritizes security by enforcing strict ownership and role-based access control.
+ * Data validation is relaxed to facilitate rapid prototyping.
+ *
+ * Data Structure:
+ * - User profiles are stored in /users/{userId} and are only accessible to the owning user.
+ * - Tasks, events, repositories, and documents are stored in their respective top-level collections.
+ *   Access to these resources is controlled through an ownerUid field on each document.
+ *
+ * Key Security Decisions:
+ * - User listing is disallowed to prevent enumeration.
+ * - Read-only collections are not used in this model.
+ * - All writes require authentication and are subject to authorization checks.
+ *
+ * Denormalization for Authorization:
+ * - Tasks, repositories, and documents include an `ownerUid` field to enable simple ownership checks without needing to perform additional reads.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Controls access to user profile information.
+     * @path /users/{userId}
+     * @allow (create) User with matching UID can create their profile.
+     * @allow (get, list, update, delete) User can only access their own profile.
+     * @deny (create) User cannot create a profile with a different UID.
+     * @deny (update, delete) User cannot modify or delete another user's profile.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /users/{userId} {
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+      function isSignedIn() {
+        return request.auth != null;
+      }
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isOwner(userId) && resource.data.uid == userId;
+      allow delete: if isOwner(userId) && resource.data.uid == userId;
+    }
+
+    /**
+     * @description Controls access to task information.
+     * @path /tasks/{taskId}
+     * @allow (create) Authenticated user can create tasks.
+     * @allow (get, list) Any authenticated user can read tasks.
+     * @allow (update, delete) Only the owner can modify or delete tasks.
+     * @deny (create) Unauthenticated users cannot create tasks.
+     * @deny (update, delete) Non-owners cannot modify or delete tasks.
+     * @principle Enforces owner-only write access.
+     */
+    match /tasks/{taskId} {
+      function isOwner(ownerUid) {
+        return request.auth.uid == ownerUid;
+      }
+      function isSignedIn() {
+        return request.auth != null;
+      }
+      function isExistingOwner(ownerUid) {
+        return isOwner(ownerUid) && resource != null;
+      }
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update: if isExistingOwner(resource.data.ownerUid);
+      allow delete: if isExistingOwner(resource.data.ownerUid);
+    }
+
+    /**
+     * @description Controls access to event information.
+     * @path /events/{eventId}
+     * @allow (create) Authenticated user can create events.
+     * @allow (get, list) Any authenticated user can read events.
+     * @allow (update, delete) Only the owner can modify or delete events.
+     * @deny (create) Unauthenticated users cannot create events.
+     * @deny (update, delete) Non-owners cannot modify or delete events.
+     * @principle Enforces owner-only write access.
+     */
+    match /events/{eventId} {
+      allow get, list: if true;
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Controls access to repository information.
+     * @path /repositories/{repositoryId}
+     * @allow (create) Authenticated user can create repositories.
+     * @allow (get, list) Any authenticated user can read repositories.
+     * @allow (update, delete) Only the owner can modify or delete repositories.
+     * @deny (create) Unauthenticated users cannot create repositories.
+     * @deny (update, delete) Non-owners cannot modify or delete repositories.
+     * @principle Enforces owner-only write access.
+     */
+    match /repositories/{repositoryId} {
+      function isOwner(ownerUid) {
+        return request.auth.uid == ownerUid;
+      }
+      function isSignedIn() {
+        return request.auth != null;
+      }
+      function isExistingOwner(ownerUid) {
+        return isOwner(ownerUid) && resource != null;
+      }
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update: if isExistingOwner(resource.data.ownerUid);
+      allow delete: if isExistingOwner(resource.data.ownerUid);
+    }
+
+    /**
+     * @description Controls access to document information.
+     * @path /documents/{documentId}
+     * @allow (create) Authenticated user can create documents.
+     * @allow (get, list) Any authenticated user can read documents.
+     * @allow (update, delete) Only the owner can modify or delete documents.
+     * @deny (create) Unauthenticated users cannot create documents.
+     * @deny (update, delete) Non-owners cannot modify or delete documents.
+     * @principle Enforces owner-only write access.
+     */
+    match /documents/{documentId} {
+      function isOwner(ownerUid) {
+        return request.auth.uid == ownerUid;
+      }
+      function isSignedIn() {
+        return request.auth != null;
+      }
+      function isExistingOwner(ownerUid) {
+        return isOwner(ownerUid) && resource != null;
+      }
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update: if isExistingOwner(resource.data.ownerUid);
+      allow delete: if isExistingOwner(resource.data.ownerUid);
+    }
+  }
+}

@@ -30,13 +30,14 @@ export type Task = {
   title: string;
   description: string;
   status: TaskStatus;
-  assignees: User[]; // Will be migrated to UserProfile later
+  assignees?: UserProfile[];
+  ownerUid?: string;
   githubPr?: {
     url: string;
     number: number;
     title: string;
   };
-  comments: Comment[];
+  comments?: Comment[];
 };
 
 export type ProjectDocument = {
@@ -55,13 +56,14 @@ export type CalendarEvent = {
 };
 
 export type Repository = {
-  id: string;
+  uid: string;
   name: string;
-  description: string;
+  description?: string;
   url: string;
-  language: string;
-  stars: number;
-  forks: number;
-  lastCommit: string;
-  owner: User;
+  language?: string;
+  stars?: number;
+  forks?: number;
+  lastCommit?: string;
+  ownerUid: string;
+  owner?: UserProfile;
 };

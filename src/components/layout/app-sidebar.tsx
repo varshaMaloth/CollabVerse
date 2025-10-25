@@ -15,7 +15,10 @@ import {
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { users } from '@/lib/data';
+import { useUser, useFirestore } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { useDoc } from '@/firebase/firestore/use-doc';
+import type { UserProfile } from '@/lib/types';
 import {
   Tooltip,
   TooltipContent,
@@ -40,7 +43,11 @@ const adminNavItem = {
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const currentUser = users[0]; // In a real app, this would come from an auth provider
+  const { data: user } = useUser();
+  const firestore = useFirestore();
+
+  const userDocRef = user ? doc(firestore, 'users', user.uid) : null;
+  const { data: userProfile } = useDoc<UserProfile>(userDocRef);
 
   return (
     <aside className="hidden border-r bg-card md:block">
@@ -69,7 +76,7 @@ export function AppSidebar() {
                 </Link>
               );
             })}
-             {currentUser.role === 'Project Manager' && (
+             {userProfile?.role === 'Project Manager' && (
               <Link
                 href={adminNavItem.href}
                 className={cn(

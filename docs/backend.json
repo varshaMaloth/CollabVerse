@@ -64,6 +64,10 @@
             "Done"
           ],
           "description": "The current status of the task."
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "The UID of the user who owns the task."
         }
       },
       "required": [
@@ -105,6 +109,40 @@
         "start",
         "type"
       ]
+    },
+    "Repository": {
+      "title": "Repository",
+      "description": "Represents a code repository linked to the project.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique ID for the repository document."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the repository."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short description of the repository."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL of the repository."
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "The UID of the user who added the repository."
+        }
+      },
+      "required": [
+        "uid",
+        "name",
+        "url",
+        "ownerUid"
+      ]
     }
   },
   "auth": {
@@ -130,6 +168,12 @@
         "$ref": "#/entities/Event"
       },
       "description": "Stores calendar events and deadlines."
+    },
+    "/repositories/{repositoryId}": {
+      "schema": {
+        "$ref": "#/entities/Repository"
+      },
+      "description": "Stores project code repositories."
     }
   }
 }

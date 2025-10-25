@@ -38,13 +38,13 @@ export default function AdminPage() {
     return users.map(user => {
         const userTasks = tasks.filter(task => task.assignees.some(a => a.id === user.id));
         const tasksDone = userTasks.filter(t => t.status === 'Done').length;
-        // Mock login time
-        const lastLogin = `${Math.floor(Math.random() * 24)} hours ago`;
+        // Mock active time
+        const lastActive = `${Math.floor(Math.random() * 24)} hours ago`;
         return {
             ...user,
             tasksAssigned: userTasks.length,
             tasksDone,
-            lastLogin
+            lastActive
         };
     })
   }, []);
@@ -125,7 +125,7 @@ export default function AdminPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Member</TableHead>
-                <TableHead>Last Login</TableHead>
+                <TableHead>Last Active</TableHead>
                 <TableHead>Tasks Assigned</TableHead>
                 <TableHead>Tasks Completed</TableHead>
               </TableRow>
@@ -145,7 +145,7 @@ export default function AdminPage() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{member.lastLogin}</TableCell>
+                  <TableCell>{member.lastActive}</TableCell>
                   <TableCell>
                     <Badge variant="outline">{member.tasksAssigned}</Badge>
                   </TableCell>

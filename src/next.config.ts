@@ -1,3 +1,4 @@
+
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -33,33 +34,22 @@ const nextConfig: NextConfig = {
     ],
   },
   webpack: (config, { isServer }) => {
+    
     // --- 1. Client-Side (Browser) Configuration ---
     if (!isServer) {
       config.resolve.fallback = {
-        // CRITICAL FIX: Alias the Node.js module to 'false' to ignore it
-        'async_hooks': false,
-
-        // Add other core modules if they pop up later
-        'fs': false,
-        'net': false,
-        'tls': false,
-
+        // This is the CRITICAL line: alias the problematic Node.js module to 'false'
+        'async_hooks': false, 
+        
+        // You might need to add other Node.js core modules here if they cause issues later:
+        'fs': false, 
+        
+        // Preserve any existing fallbacks
         ...config.resolve.fallback,
       };
     }
-
-    // --- 2. Server-Side (Node.js) Configuration ---
-    // Mark the tracing package as external to prevent it from being processed and leaking
-    if (isServer) {
-      config.externals = [
-        // List the package causing the issue here:
-        '@opentelemetry/context-async-hooks',
-
-        ...(config.externals || []),
-      ];
-    }
     
-    // --- Also disable OpenTelemetry completely by aliasing them to false
+    // --- 2. Disable OpenTelemetry completely by aliasing them to false
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       "@opentelemetry/api": false,

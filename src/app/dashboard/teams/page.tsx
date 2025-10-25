@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Flame, MessageCircle, Star, UserPlus } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AddMemberDialog } from '@/components/dashboard/add-member-dialog';
 
 function UserCardSkeleton() {
   return (
@@ -46,11 +47,14 @@ export default function TeamsPage() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle>Team Members</CardTitle>
-          <CardDescription>
-            Meet the talented individuals driving this project forward.
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Team Members</CardTitle>
+            <CardDescription>
+              Meet the talented individuals driving this project forward.
+            </CardDescription>
+          </div>
+          <AddMemberDialog />
         </CardHeader>
         <CardContent>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-background">
-      <p className="text-foreground">Loading Project Hub...</p>
+      <p className="text-foreground">Loading CollabVerse...</p>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Project Hub',
+  title: 'CollabVerse',
   description: 'A centralized platform to manage tasks, meetings, and project milestones.',
 };
 

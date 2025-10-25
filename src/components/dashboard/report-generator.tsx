@@ -1,7 +1,7 @@
 'use client';
 
-import { useActions } from '@genkit-ai/next/use-actions';
-import { generateReportAction } from '@/app/actions';
+import { useActions } from '@genkit-ai/next';
+import { generateReportAction, GenerateWeeklyProgressReportInputSchema } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Bot, Loader2, MessageSquare } from 'lucide-react';
-import { GenerateWeeklyProgressReportInputSchema } from '@/ai/flows/generate-weekly-progress-report';
 import { useFormStatus } from 'react-dom';
 
 function SubmitButton() {
@@ -42,10 +41,10 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   
-  const { last, isStreaming, run } = useActions<typeof GenerateWeeklyProgressReportInputSchema, string>({
+  const { last, isStreaming, run } = useActions({
     action: generateReportAction,
     onFinish: (result) => {
-      if (result.status === 'error') {
+      if (result && 'status' in result && result.status === 'error') {
         toast({
           title: "Error",
           description: result.error.message || "Failed to generate report.",
@@ -160,17 +159,17 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           )}
-          {last?.output && (
+          {last && (
             <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap rounded-md bg-muted p-4">
-              {last.output}
+              {last}
             </div>
           )}
-          {!isStreaming && !last?.output && (
+          {!isStreaming && !last && (
             <div className="flex items-center justify-center h-full text-center text-muted-foreground p-4">
               <p>Your report will be displayed here once generated.</p>
             </div>
           )}
-          {last?.output && (
+          {last && (
              <div className="space-y-3 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                 <p className="text-sm font-medium flex items-center gap-2">
                   <MessageSquare className="h-4 w-4" />

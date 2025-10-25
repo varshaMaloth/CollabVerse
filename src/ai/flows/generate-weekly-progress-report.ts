@@ -8,24 +8,8 @@
  */
 
 import {ai} from '@/ai/genkit';
+import { GenerateWeeklyProgressReportInputSchema } from '@/app/actions';
 import {z} from 'genkit';
-import {generate} from 'genkit/generate';
-
-export const GenerateWeeklyProgressReportInputSchema = z.object({
-  taskCompletionSummary: z
-    .string()
-    .describe('A summary of the tasks completed during the week.'),
-  upcomingDeadlines: z
-    .string()
-    .describe('A list of upcoming project deadlines.'),
-  overallProjectStatus: z
-    .string()
-    .describe('A summary of the overall project status.'),
-});
-
-export type GenerateWeeklyProgressReportInput = z.infer<
-  typeof GenerateWeeklyProgressReportInputSchema
->;
 
 export const generateWeeklyProgressReportFlow = ai.defineFlow(
   {
@@ -49,13 +33,13 @@ export const generateWeeklyProgressReportFlow = ai.defineFlow(
   Overall Project Status: ${input.overallProjectStatus}
   `;
 
-    const {output} = await generate({
+    const result = await ai.generate({
       prompt,
-      model: ai.model,
+      model: 'googleai/gemini-2.5-flash',
       output: {
         format: 'text',
       },
     });
-    return output!;
+    return result.text;
   }
 );

@@ -1,35 +1,25 @@
 'use server';
 
-import { generateWeeklyProgressReportFlow, GenerateWeeklyProgressReportInputSchema } from '@/ai/flows/generate-weekly-progress-report';
-import { runFlow } from 'genkit/next';
+import { generateWeeklyProgressReportFlow } from '@/ai/flows/generate-weekly-progress-report';
+import { runFlow } from '@genkit-ai/next';
 import { z } from 'zod';
 
-type State = {
-  status: 'idle' | 'loading' | 'success' | 'error';
-  message?: string;
-  report?: string;
-  fieldErrors?: {
-    taskCompletionSummary?: string[];
-    upcomingDeadlines?: string[];
-    overallProjectStatus?: string[];
-  };
-};
+export const GenerateWeeklyProgressReportInputSchema = z.object({
+  taskCompletionSummary: z
+    .string()
+    .describe('A summary of the tasks completed during the week.'),
+  upcomingDeadlines: z
+    .string()
+    .describe('A list of upcoming project deadlines.'),
+  overallProjectStatus: z
+    .string()
+    .describe('A summary of the overall project status.'),
+});
 
-export async function generateReportAction(formData: FormData) {
-  const validatedFields = GenerateWeeklyProgressReportInputSchema.safeParse({
-    taskCompletionSummary: formData.get('taskCompletionSummary'),
-    upcomingDeadlines: formData.get('upcomingDeadlines'),
-    overallProjectStatus: formData.get('overallProjectStatus'),
-  });
+export type GenerateWeeklyProgressReportInput = z.infer<
+  typeof GenerateWeeklyProgressReportInputSchema
+>;
 
-  if (!validatedFields.success) {
-    // This part is not fully utilized by the new implementation but kept for schema validation logic.
-    return {
-      status: 'error',
-      message: 'Please check the form for errors.',
-      fieldErrors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-
-  return runFlow(generateWeeklyProgressReportFlow, validatedFields.data);
+export async function generateReportAction(input: GenerateWeeklyProgressReportInput) {
+  return await runFlow(generateWeeklyProgressReportFlow, input);
 }

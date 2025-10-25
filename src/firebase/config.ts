@@ -6,11 +6,11 @@
 import type { FirebaseOptions } from "firebase/app";
 
 export const firebaseConfig: FirebaseOptions = {
-  apiKey: "AIzaSyBMzJj1cmO2x6EDr-wcTUkqYU3GWq9TXDc",
-  authDomain: "studio-152957950-74a0e.firebaseapp.com",
-  projectId: "studio-152957950-74a0e",
-  storageBucket: "studio-152957950-74a0e.appspot.com",
-  messagingSenderId: "49436991769",
-  appId: "1:49436991769:web:1e1496608881cf7a6ba588",
+  apiKey: "AIzaSyBT0ENAXBg9TgWB1sl8Gh5ynwuGBYCU6_c",
+  authDomain: "studio-152957950-7bcee.firebaseapp.com",
+  projectId: "studio-152957950-7bcee",
+  storageBucket: "studio-152957950-7bcee.appspot.com",
+  messagingSenderId: "971913900795",
+  appId: "1:971913900795:web:8ef5cdceb773c5e555765e",
   measurementId: "",
 };

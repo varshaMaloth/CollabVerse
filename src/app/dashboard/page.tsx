@@ -1,8 +1,7 @@
 import { tasks } from '@/lib/data';
 import type { TaskStatus } from '@/lib/types';
 import { TaskCard } from '@/components/dashboard/task-card';
-import { PlusCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { AddTaskDialog } from '@/components/dashboard/add-task-dialog';
 
 const columns: { title: TaskStatus; tasks: typeof tasks }[] = [
   {
@@ -25,10 +24,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Task Board</h2>
         <div className="flex items-center space-x-2">
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Task
-          </Button>
+          <AddTaskDialog />
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-3">

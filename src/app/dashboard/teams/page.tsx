@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useCollection } from '@/firebase';
@@ -17,6 +18,7 @@ import { Flame, MessageCircle, Star, UserPlus } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AddMemberDialog } from '@/components/dashboard/add-member-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 function UserCardSkeleton() {
   return (
@@ -41,6 +43,7 @@ function UserCardSkeleton() {
 
 export default function TeamsPage() {
   const firestore = useFirestore();
+  const { toast } = useToast();
   const usersCollectionRef = collection(firestore, 'users');
   const { data: users, loading } = useCollection<UserProfile>(usersCollectionRef);
 
@@ -55,6 +58,12 @@ export default function TeamsPage() {
     return (Math.abs(hash) % max) + 1;
   };
 
+  const handleActionClick = (title: string, description: string) => {
+    toast({
+      title,
+      description,
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -89,15 +98,28 @@ export default function TeamsPage() {
                 </CardContent>
                 <Separator />
                 <div className="p-4 grid grid-cols-2 gap-2 text-sm">
-                   <Button variant="outline" size="sm">
+                   <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleActionClick('Connection Request Sent', `You sent a connection request to ${user.displayName}.`)}
+                    >
                     <UserPlus className="mr-2 h-4 w-4" />
                     Connect
                    </Button>
-                   <Button variant="outline" size="sm">
+                   <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleActionClick('Message Sent', `Your message to ${user.displayName} has been sent.`)}
+                    >
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Message
                    </Button>
-                   <Button variant="outline" size="sm" className="col-span-2">
+                   <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="col-span-2"
+                      onClick={() => handleActionClick('Feedback Submitted', `Your feedback for ${user.displayName} has been submitted.`)}
+                    >
                     <Star className="mr-2 h-4 w-4" />
                     Give Feedback
                    </Button>

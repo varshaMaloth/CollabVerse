@@ -13,7 +13,7 @@ export default function CalendarPage() {
     .sort((a, b) => a.start.getTime() - b.start.getTime());
 
   return (
-    <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+    <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-1">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Upcoming Events</CardTitle>
@@ -53,29 +53,30 @@ export default function CalendarPage() {
           </div>
         </CardContent>
       </Card>
-      <Card className="flex justify-center items-center">
-        <Calendar
-          mode="single"
-          selected={today}
-          className="p-0"
-          classNames={{
-            root: "w-full h-full",
-            months: "w-full h-full flex justify-center items-center",
-            month: "w-full",
-            caption_label: "text-lg font-bold",
-            head_row: "grid grid-cols-7",
-            row: "grid grid-cols-7"
-          }}
-          modifiers={{
-            event: events.map(e => e.start),
-          }}
-          modifiersStyles={{
-            event: { 
-              color: 'hsl(var(--accent-foreground))',
-              backgroundColor: 'hsl(var(--accent))',
-            }
-          }}
-        />
+      <Card>
+        <CardContent className="flex justify-center items-center p-0">
+          <Calendar
+            mode="single"
+            selected={today}
+            className="p-0 w-full"
+            classNames={{
+              months: "w-full flex justify-center",
+              month: "w-full max-w-sm",
+              caption_label: "text-lg font-bold",
+              head_row: "grid grid-cols-7",
+              row: "grid grid-cols-7"
+            }}
+            modifiers={{
+              event: events.map(e => e.start),
+            }}
+            modifiersStyles={{
+              event: { 
+                color: 'hsl(var(--accent-foreground))',
+                backgroundColor: 'hsl(var(--accent))',
+              }
+            }}
+          />
+        </CardContent>
       </Card>
     </div>
   );

@@ -76,6 +76,7 @@ export function AddRepositoryDialog() {
           description: `Repository "${name}" has been successfully added.`,
         });
         setOpen(false);
+        (event.target as HTMLFormElement).reset();
       })
       .catch((serverError) => {
         const permissionError = new FirestorePermissionError({

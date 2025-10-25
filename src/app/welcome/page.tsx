@@ -70,6 +70,8 @@ export default function WelcomePage() {
           requestResourceData: userProfile,
         });
         errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => {
         setIsSubmitting(false);
       });
   };

@@ -1,4 +1,9 @@
-import { users } from '@/lib/data';
+'use client';
+
+import { useCollection } from '@/firebase';
+import { useFirestore } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { UserProfile } from '@/lib/types';
 import {
   Card,
   CardContent,
@@ -10,8 +15,34 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Flame, MessageCircle, Star, UserPlus } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+
+function UserCardSkeleton() {
+  return (
+    <Card className="flex flex-col">
+      <CardContent className="flex flex-col items-center p-6 text-center">
+        <Skeleton className="h-20 w-20 rounded-full mb-4" />
+        <Skeleton className="h-5 w-32 mb-2" />
+        <Skeleton className="h-4 w-24" />
+      </CardContent>
+      <Separator />
+      <div className="p-4 grid grid-cols-2 gap-2 text-sm">
+        <Skeleton className="h-9 w-full" />
+        <Skeleton className="h-9 w-full" />
+        <Skeleton className="h-9 w-full col-span-2" />
+      </div>
+      <div className="p-4 border-t bg-muted/50 flex justify-center items-center rounded-b-lg">
+        <Skeleton className="h-5 w-24" />
+      </div>
+    </Card>
+  );
+}
 
 export default function TeamsPage() {
+  const firestore = useFirestore();
+  const usersCollectionRef = collection(firestore, 'users');
+  const { data: users, loading } = useCollection<UserProfile>(usersCollectionRef);
+
   return (
     <div className="space-y-6">
       <Card>
@@ -23,14 +54,21 @@ export default function TeamsPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {users.map((user) => (
-              <Card key={user.id} className="flex flex-col">
+            {loading && (
+                <>
+                    <UserCardSkeleton />
+                    <UserCardSkeleton />
+                    <UserCardSkeleton />
+                </>
+            )}
+            {users && users.map((user) => (
+              <Card key={user.uid} className="flex flex-col">
                 <CardContent className="flex flex-col items-center p-6 text-center">
                   <Avatar className="h-20 w-20 mb-4">
-                    <AvatarImage src={user.avatarUrl} alt={user.name} />
-                    <AvatarFallback>{user.initials}</AvatarFallback>
+                    <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? ''} />
+                    <AvatarFallback>{user.displayName?.charAt(0) ?? 'U'}</AvatarFallback>
                   </Avatar>
-                  <h3 className="text-lg font-semibold">{user.name}</h3>
+                  <h3 className="text-lg font-semibold">{user.displayName}</h3>
                   <p className="text-muted-foreground">{user.role}</p>
                 </CardContent>
                 <Separator />

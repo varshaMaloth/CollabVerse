@@ -1,3 +1,4 @@
+'use client';
 import { Timestamp } from 'firebase/firestore';
 
 export type User = {
@@ -41,10 +42,10 @@ export type Task = {
 };
 
 export type ProjectDocument = {
-  id: string;
+  uid: string;
   title: string;
-  owner: User;
-  lastModified: string;
+  ownerUid: string;
+  lastModified: Timestamp;
   url: string;
 };
 

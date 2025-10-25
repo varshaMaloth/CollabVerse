@@ -143,6 +143,42 @@
         "url",
         "ownerUid"
       ]
+    },
+    "Document": {
+      "title": "Document",
+      "description": "Represents a project document.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique ID for the document."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the document."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL where the document is stored."
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "The UID of the user who owns the document."
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp of when the document was last modified."
+        }
+      },
+      "required": [
+        "uid",
+        "title",
+        "url",
+        "ownerUid",
+        "lastModified"
+      ]
     }
   },
   "auth": {
@@ -174,6 +210,12 @@
         "$ref": "#/entities/Repository"
       },
       "description": "Stores project code repositories."
+    },
+    "/documents/{documentId}": {
+      "schema": {
+        "$ref": "#/entities/Document"
+      },
+      "description": "Stores project documents."
     }
   }
 }

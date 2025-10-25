@@ -106,6 +106,7 @@ export const repositories: Repository[] = [
       stars: 128,
       forks: 12,
       lastCommit: '2 hours ago',
+      owner: users[0],
     },
     {
       id: 'repo-2',
@@ -116,6 +117,7 @@ export const repositories: Repository[] = [
       stars: 95,
       forks: 8,
       lastCommit: '5 hours ago',
+      owner: users[1],
     },
     {
       id: 'repo-3',
@@ -126,5 +128,6 @@ export const repositories: Repository[] = [
       stars: 210,
       forks: 25,
       lastCommit: '1 day ago',
+      owner: users[2],
     },
 ];

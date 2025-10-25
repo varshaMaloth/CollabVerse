@@ -17,6 +17,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { GitFork, Star } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function LanguageBadge({ language }: { language: string }) {
     let colorClass = 'bg-gray-200 text-gray-800';
@@ -42,6 +43,7 @@ export default function RepositoriesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Owner</TableHead>
               <TableHead>Language</TableHead>
               <TableHead>Stats</TableHead>
               <TableHead>Last Commit</TableHead>
@@ -56,6 +58,15 @@ export default function RepositoriesPage() {
                       {repo.name}
                     </Link>
                     <p className="text-sm text-muted-foreground">{repo.description}</p>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={repo.owner.avatarUrl} alt={repo.owner.name} />
+                      <AvatarFallback>{repo.owner.initials}</AvatarFallback>
+                    </Avatar>
+                    <span>{repo.owner.name}</span>
                   </div>
                 </TableCell>
                 <TableCell>

@@ -53,4 +53,5 @@ export type Repository = {
   stars: number;
   forks: number;
   lastCommit: string;
+  owner: User;
 };

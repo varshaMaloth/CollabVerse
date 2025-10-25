@@ -61,7 +61,7 @@ export default function DocumentsPage() {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
             <CardTitle>Project Documents</CardTitle>
-            <CardDescription className="mt-1">A list of all documents related to this project.</CardDescription>
+            <CardDescription>A list of all documents related to this project.</CardDescription>
         </div>
         <AddDocumentDialog />
       </CardHeader>

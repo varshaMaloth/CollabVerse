@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, Loader2, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Bot, Loader2, MessageSquare, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const initialState = {
@@ -146,22 +146,14 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
           )}
           {state.report && (
              <div className="space-y-3 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-                <p className="text-sm font-medium">Was this report helpful?</p>
-                <div className="flex gap-2">
-                    <Button variant="outline" size="icon" className={cn(feedback === 'good' && 'bg-accent')} onClick={() => setFeedback('good')}>
-                        <ThumbsUp className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" className={cn(feedback === 'bad' && 'bg-accent')} onClick={() => setFeedback('bad')}>
-                        <ThumbsDown className="h-4 w-4" />
-                    </Button>
+                <p className="text-sm font-medium flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4" />
+                  Mentor Feedback
+                </p>
+                <div className="space-y-2">
+                    <Textarea id="feedback-text" placeholder="Provide feedback for your mentee..." rows={3}/>
+                    <Button size="sm">Submit Feedback</Button>
                 </div>
-                {feedback && (
-                    <div className="space-y-2">
-                        <Label htmlFor="feedback-text">Additional feedback:</Label>
-                        <Textarea id="feedback-text" placeholder="Tell us more..." rows={2}/>
-                        <Button size="sm">Submit Feedback</Button>
-                    </div>
-                )}
             </div>
           )}
         </CardContent>

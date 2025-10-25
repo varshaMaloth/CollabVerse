@@ -1,7 +1,8 @@
 'use client';
 
-import { Menu, Search, Bell, Flame } from 'lucide-react';
+import { Menu, Search, Bell, Flame, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -13,6 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -57,6 +59,21 @@ export function AppHeader() {
             <Bell className="h-5 w-5" />
             <span className="sr-only">Notifications</span>
           </Button>
+           <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                 <Link href="/dashboard/settings">
+                  <Button variant="ghost" size="icon" className={cn("rounded-full", pathname === '/dashboard/settings' && 'bg-muted')}>
+                    <Settings className="h-5 w-5" />
+                    <span className="sr-only">Settings</span>
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Settings</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <UserNav />
         </div>
       </div>

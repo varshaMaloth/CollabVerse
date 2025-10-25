@@ -17,10 +17,16 @@ export default function CalendarPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Upcoming Events</CardTitle>
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Event
-          </Button>
+          <div className="flex gap-2">
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Event
+            </Button>
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Deadline
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

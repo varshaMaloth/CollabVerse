@@ -109,7 +109,7 @@ export default function RepositoriesPage() {
         <div className="flex items-center justify-between">
             <div>
                 <CardTitle>Repositories</CardTitle>
-                <CardDescription>
+                <CardDescription className="mt-1">
                   A list of all GitHub repositories for this project.
                 </CardDescription>
             </div>

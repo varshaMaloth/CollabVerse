@@ -12,7 +12,6 @@ import {
   Github,
   Users,
   Shield,
-  Blocks,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -48,7 +47,7 @@ export function AppSidebar() {
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-16 items-center border-b px-4 lg:px-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-            <Blocks className="h-6 w-6 text-primary" />
+            <Briefcase className="h-6 w-6 text-primary" />
             <span className="">CollabVerse</span>
           </Link>
         </div>

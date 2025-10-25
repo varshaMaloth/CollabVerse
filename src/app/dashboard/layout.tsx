@@ -1,5 +1,10 @@
-import { AppHeader } from '@/components/layout/app-header';
 import { AppSidebar } from '@/components/layout/app-sidebar';
+import dynamic from 'next/dynamic';
+
+const AppHeader = dynamic(() => import('@/components/layout/app-header').then(mod => mod.AppHeader), {
+  ssr: false,
+});
+
 
 export default function DashboardLayout({
   children,

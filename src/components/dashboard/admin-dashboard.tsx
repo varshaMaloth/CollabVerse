@@ -8,27 +8,28 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useUser } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { Task, UserProfile } from '@/lib/types';
+import { useDoc } from '@/firebase/firestore/use-doc';
+import { doc } from 'firebase/firestore';
 
 
 export default function AdminDashboard() {
   const router = useRouter();
   const firestore = useFirestore();
+  const { data: user } = useUser();
+  const userDocRef = user ? doc(firestore, 'users', user.uid) : null;
+  const { data: currentUser, loading: userLoading } = useDoc<UserProfile>(userDocRef);
+
   const { data: users, loading: usersLoading } = useCollection<UserProfile>(collection(firestore, 'users'));
   const { data: tasks, loading: tasksLoading } = useCollection<Task>(collection(firestore, 'tasks'));
   
-  const currentUser = useMemo(() => {
-    if (!users) return null;
-    return users.find(u => u.role === 'Project Manager');
-  }, [users]);
-
   useEffect(() => {
-    if (!usersLoading && currentUser?.role && currentUser.role !== 'Project Manager') {
+    if (!userLoading && currentUser?.role && currentUser.role !== 'Project Manager') {
       router.replace('/dashboard');
     }
-  }, [currentUser, usersLoading, router]);
+  }, [currentUser, userLoading, router]);
 
   const projectProgress = useMemo(() => {
     if (!tasks) return 0;
@@ -47,6 +48,7 @@ export default function AdminDashboard() {
   }, [tasks]);
   
   const getStableLastActive = (uid: string) => {
+    if (!uid) return 'a while ago';
     let hash = 0;
     for (let i = 0; i < uid.length; i++) {
         const char = uid.charCodeAt(i);
@@ -58,9 +60,9 @@ export default function AdminDashboard() {
   };
   
   const teamWorkInfo = useMemo(() => {
-    if (!users || !tasks) return [];
+    if (!users || !tasks || !currentUser) return [];
     return users.map(user => {
-        const userTasks = tasks.filter(task => task.assignees?.some(a => a.uid === user.uid));
+        const userTasks = tasks.filter(task => task.ownerUid === user.uid);
         const tasksDone = userTasks.filter(t => t.status === 'Done').length;
         
         return {
@@ -72,7 +74,7 @@ export default function AdminDashboard() {
     })
   }, [users, tasks, currentUser]);
 
-  if (usersLoading || !currentUser || currentUser.role !== 'Project Manager') {
+  if (userLoading || !currentUser || currentUser.role !== 'Project Manager') {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <p>Verifying permissions...</p>
@@ -120,7 +122,7 @@ export default function AdminDashboard() {
          <Card>
             <CardHeader>
                 <CardTitle>Quick Stats</CardTitle>
-            </CardHeader>
+            </Header>
             <CardContent className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
                     <span className="font-medium">Total Tasks</span>

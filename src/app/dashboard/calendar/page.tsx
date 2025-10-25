@@ -5,12 +5,14 @@ import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { CalendarEvent } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Video } from "lucide-react";
 import { format } from "date-fns";
 import { AddEventDialog } from '@/components/dashboard/add-event-dialog';
 import { useCollection, useFirestore } from '@/firebase';
 import { collection, orderBy, query, where, Timestamp } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 function UpcomingEventsSkeleton() {
     return (
@@ -85,9 +87,19 @@ export default function CalendarPage() {
                       {format(event.start.toDate(), "MMMM d, yyyy 'at' h:mm a")}
                     </p>
                   </div>
-                  <Badge variant={event.type === 'meeting' ? 'secondary' : 'default'} className={event.type === 'meeting' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}>
-                    {event.type}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    {event.type === 'meeting' && event.meetingLink && (
+                        <Button asChild variant="outline" size="sm">
+                            <Link href={event.meetingLink} target="_blank">
+                                <Video className="h-4 w-4 mr-2" />
+                                Join Meeting
+                            </Link>
+                        </Button>
+                    )}
+                    <Badge variant={event.type === 'meeting' ? 'secondary' : 'default'} className={event.type === 'meeting' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}>
+                        {event.type}
+                    </Badge>
+                  </div>
                 </div>
               ))
             ) : (

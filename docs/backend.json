@@ -101,6 +101,11 @@
             "deadline"
           ],
           "description": "The type of the event."
+        },
+        "meetingLink": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL for the meeting."
         }
       },
       "required": [

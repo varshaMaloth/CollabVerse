@@ -23,6 +23,7 @@ import { Calendar } from '../ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import type { CalendarEvent } from '@/lib/types';
 
 type AddEventDialogProps = {
     type: 'meeting' | 'deadline'
@@ -52,16 +53,21 @@ export function AddEventDialog({ type }: AddEventDialogProps) {
     const formData = new FormData(event.currentTarget);
     const title = formData.get('title') as string;
     const time = formData.get('time') as string;
+    const meetingLink = formData.get('meetingLink') as string;
     
     const [hours, minutes] = time.split(':').map(Number);
     const startDate = new Date(date);
     startDate.setHours(hours, minutes);
 
-    const newEvent = {
+    const newEvent: Omit<CalendarEvent, 'uid'> = {
       title,
       start: Timestamp.fromDate(startDate),
       type,
     };
+    
+    if (type === 'meeting' && meetingLink) {
+        newEvent.meetingLink = meetingLink;
+    }
 
     const eventsCollectionRef = collection(firestore, 'events');
     
@@ -146,6 +152,14 @@ export function AddEventDialog({ type }: AddEventDialogProps) {
               </Label>
               <Input id="time" name="time" type="time" className="col-span-3" required />
             </div>
+            {type === 'meeting' && (
+                 <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="meetingLink" className="text-right">
+                        Meeting Link
+                    </Label>
+                    <Input id="meetingLink" name="meetingLink" type="url" placeholder="https://meet.google.com/..." className="col-span-3" />
+                </div>
+            )}
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>

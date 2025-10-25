@@ -54,6 +54,7 @@ export type CalendarEvent = {
   title: string;
   start: Timestamp;
   type: 'meeting' | 'deadline';
+  meetingLink?: string;
 };
 
 export type Repository = {

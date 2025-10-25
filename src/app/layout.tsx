@@ -3,6 +3,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import './globals.css';
 import { Inter } from 'next/font/google';
+import { FirebaseClientProvider } from '@/firebase';
+import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -19,8 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('font-sans antialiased', inter.variable)}>
-        {children}
-        <Toaster />
+        <FirebaseClientProvider>
+          {children}
+          <Toaster />
+          <FirebaseErrorListener />
+        </FirebaseClientProvider>
       </body>
     </html>
   );

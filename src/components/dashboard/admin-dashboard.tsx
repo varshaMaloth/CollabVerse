@@ -6,12 +6,6 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { useUser, useFirestore, useCollection } from "@/firebase";
-import { useDoc } from "@/firebase/firestore/use-doc";
-import { doc, collection } from "firebase/firestore";
-import type { UserProfile, Task } from "@/lib/types";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -25,7 +19,20 @@ import {
   Cell,
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser, useFirestore, useCollection } from "@/firebase";
+import { useDoc } from "@/firebase/firestore/use-doc";
+import { doc, collection } from "firebase/firestore";
+import type { UserProfile, Task } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 
+
+/**
+ * AdminDashboard
+ *
+ * This component displays an admin dashboard with charts for task status and user roles.
+ * It ensures that only users with the 'Project Manager' role can view it.
+ */
 const AdminDashboard: React.FC = () => {
   const router = useRouter();
   const firestore = useFirestore();

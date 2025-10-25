@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, Loader2 } from 'lucide-react';
+import { Bot, Loader2, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const initialState = {
   status: 'idle' as const,
@@ -45,6 +46,8 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
   const [state, formAction] = useFormState(generateReportAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
+  const [feedback, setFeedback] = useState<'good' | 'bad' | null>(null);
+
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -53,7 +56,7 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
         description: state.message,
       });
       // We don't reset the form anymore to keep the pre-filled data.
-      // formRef.current?.reset(); 
+      // formRef.current?.reset();
     } else if (state.status === 'error' && state.message && !state.fieldErrors) {
       toast({
         title: "Error",
@@ -125,13 +128,13 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
           <CardTitle>Generated Report</CardTitle>
           <CardDescription>The AI-generated report will appear below.</CardDescription>
         </CardHeader>
-        <CardContent className="flex-1">
+        <CardContent className="flex-1 flex flex-col gap-4">
           {state.status === 'loading' && (
             <div className="flex items-center justify-center h-full">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           )}
-          {state.status === 'success' && state.report && (
+          {state.report && (
             <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap rounded-md bg-muted p-4">
               {state.report}
             </div>
@@ -141,9 +144,24 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
               <p>Your report will be displayed here once generated.</p>
             </div>
           )}
-           {state.status === 'idle' && state.report && (
-            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap rounded-md bg-muted p-4">
-              {state.report}
+          {state.report && (
+             <div className="space-y-3 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+                <p className="text-sm font-medium">Was this report helpful?</p>
+                <div className="flex gap-2">
+                    <Button variant="outline" size="icon" className={cn(feedback === 'good' && 'bg-accent')} onClick={() => setFeedback('good')}>
+                        <ThumbsUp className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" className={cn(feedback === 'bad' && 'bg-accent')} onClick={() => setFeedback('bad')}>
+                        <ThumbsDown className="h-4 w-4" />
+                    </Button>
+                </div>
+                {feedback && (
+                    <div className="space-y-2">
+                        <Label htmlFor="feedback-text">Additional feedback:</Label>
+                        <Textarea id="feedback-text" placeholder="Tell us more..." rows={2}/>
+                        <Button size="sm">Submit Feedback</Button>
+                    </div>
+                )}
             </div>
           )}
         </CardContent>

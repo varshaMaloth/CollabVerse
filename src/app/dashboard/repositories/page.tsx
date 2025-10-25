@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { repositories } from '@/lib/data';
 import {
   Card,
@@ -16,8 +19,9 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { GitFork, Star } from 'lucide-react';
+import { GitFork, Star, Search } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
 
 function LanguageBadge({ language }: { language: string }) {
     let colorClass = 'bg-gray-200 text-gray-800';
@@ -30,6 +34,14 @@ function LanguageBadge({ language }: { language: string }) {
 }
 
 export default function RepositoriesPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredRepositories = repositories.filter(
+    (repo) =>
+      repo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      repo.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Card>
       <CardHeader>
@@ -37,6 +49,15 @@ export default function RepositoriesPage() {
         <CardDescription>
           A list of all GitHub repositories for this project.
         </CardDescription>
+        <div className="relative pt-2">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search repositories..."
+            className="pl-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -50,7 +71,7 @@ export default function RepositoriesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {repositories.map((repo) => (
+            {filteredRepositories.map((repo) => (
               <TableRow key={repo.id}>
                 <TableCell>
                   <div className="flex flex-col">

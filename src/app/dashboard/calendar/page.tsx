@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Calendar } from "@/components/ui/calendar";
+import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { CalendarEvent } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,11 @@ function UpcomingEventsSkeleton() {
         </div>
     )
 }
+
+const ClientOnlyCalendar = dynamic(() => import('@/components/ui/calendar').then(mod => mod.Calendar), {
+  ssr: false,
+  loading: () => <div className="p-4"><Skeleton className="w-full h-[280px]" /></div>,
+});
 
 export default function CalendarPage() {
   const firestore = useFirestore();
@@ -93,7 +98,7 @@ export default function CalendarPage() {
       </Card>
       <Card>
         <CardContent className="flex justify-center items-center p-0">
-          <Calendar
+          <ClientOnlyCalendar
             mode="single"
             selected={today}
             className="p-0 w-full"

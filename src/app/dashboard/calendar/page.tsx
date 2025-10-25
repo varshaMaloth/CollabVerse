@@ -2,8 +2,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { events } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, PlusCircle } from "lucide-react";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 export default function CalendarPage() {
   const today = new Date();
@@ -14,8 +15,12 @@ export default function CalendarPage() {
   return (
     <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Upcoming Events</CardTitle>
+          <Button>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Event
+          </Button>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

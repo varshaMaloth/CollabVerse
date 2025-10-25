@@ -1,10 +1,10 @@
 import type { User, Task, ProjectDocument, CalendarEvent, Repository } from '@/lib/types';
 
 export const users: User[] = [
-  { id: 'user-1', name: 'Alice', avatarUrl: 'https://picsum.photos/seed/user1/40/40', initials: 'A' },
-  { id: 'user-2', name: 'Bob', avatarUrl: 'https://picsum.photos/seed/user2/40/40', initials: 'B' },
-  { id: 'user-3', name: 'Charlie', avatarUrl: 'https://picsum.photos/seed/user3/40/40', initials: 'C' },
-  { id: 'user-4', name: 'Diana', avatarUrl: 'https://picsum.photos/seed/user4/40/40', initials: 'D' },
+  { id: 'user-1', name: 'Alice', avatarUrl: 'https://picsum.photos/seed/user1/40/40', initials: 'A', role: 'Project Manager' },
+  { id: 'user-2', name: 'Bob', avatarUrl: 'https://picsum.photos/seed/user2/40/40', initials: 'B', role: 'Frontend Developer' },
+  { id: 'user-3', name: 'Charlie', avatarUrl: 'https://picsum.photos/seed/user3/40/40', initials: 'C', role: 'Backend Developer' },
+  { id: 'user-4', name: 'Diana', avatarUrl: 'https://picsum.photos/seed/user4/40/40', initials: 'D', role: 'Designer' },
 ];
 
 export const tasks: Task[] = [

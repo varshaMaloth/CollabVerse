@@ -3,6 +3,7 @@ export type User = {
   name: string;
   avatarUrl: string;
   initials: string;
+  role: string;
 };
 
 export type TaskStatus = 'To Do' | 'In Progress' | 'Done';

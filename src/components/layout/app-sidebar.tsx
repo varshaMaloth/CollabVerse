@@ -10,6 +10,7 @@ import {
   Settings,
   Briefcase,
   Github,
+  Users,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ import {
 
 const navItems = [
   { href: '/dashboard', icon: LayoutGrid, label: 'Dashboard' },
+  { href: '/dashboard/teams', icon: Users, label: 'Teams' },
   { href: '/dashboard/calendar', icon: Calendar, label: 'Calendar' },
   { href: '/dashboard/repositories', icon: Github, label: 'Repositories' },
   { href: '/dashboard/documents', icon: FileText, label: 'Documents' },

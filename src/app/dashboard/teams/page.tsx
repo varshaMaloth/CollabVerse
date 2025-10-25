@@ -44,6 +44,18 @@ export default function TeamsPage() {
   const usersCollectionRef = collection(firestore, 'users');
   const { data: users, loading } = useCollection<UserProfile>(usersCollectionRef);
 
+  // Helper to generate a consistent number from a string (like a UID)
+  const getStableNumber = (str: string, max: number) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return (Math.abs(hash) % max) + 1;
+  };
+
+
   return (
     <div className="space-y-6">
       <Card>
@@ -93,7 +105,7 @@ export default function TeamsPage() {
                  <div className="p-4 border-t bg-muted/50 flex justify-center items-center rounded-b-lg">
                     <Flame className="h-5 w-5 text-orange-500 mr-2" />
                     <span className="text-sm font-semibold">
-                      {Math.floor(Math.random() * 20) + 1} Day Streak
+                      {getStableNumber(user.uid, 20)} Day Streak
                     </span>
                  </div>
               </Card>

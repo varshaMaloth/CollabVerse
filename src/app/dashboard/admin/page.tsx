@@ -1,21 +1,39 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { users, tasks } from '@/lib/data';
+import { users as staticUsers, tasks } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { UserProfile } from '@/lib/types';
+
 
 export default function AdminPage() {
   const router = useRouter();
-  const currentUser = users[0]; 
+  const firestore = useFirestore();
+  const { data: users } = useCollection<UserProfile>(collection(firestore, 'users'));
+  const currentUser = users?.[0];
+
+  const [lastActiveTimes, setLastActiveTimes] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (currentUser.role !== 'Project Manager') {
+    if (users) {
+      const newTimes: Record<string, string> = {};
+      users.forEach(user => {
+        newTimes[user.uid] = `${Math.floor(Math.random() * 24)} hours ago`;
+      });
+      setLastActiveTimes(newTimes);
+    }
+  }, [users]);
+  
+  useEffect(() => {
+    if (currentUser?.role && currentUser.role !== 'Project Manager') {
       router.replace('/dashboard');
     }
   }, [currentUser, router]);
@@ -35,24 +53,24 @@ export default function AdminPage() {
   }, []);
   
   const teamWorkInfo = useMemo(() => {
+    if (!users) return [];
     return users.map(user => {
-        const userTasks = tasks.filter(task => task.assignees.some(a => a.id === user.id));
+        const userTasks = tasks.filter(task => task.assignees?.some(a => a.uid === user.uid));
         const tasksDone = userTasks.filter(t => t.status === 'Done').length;
-        // Mock active time
-        const lastActive = `${Math.floor(Math.random() * 24)} hours ago`;
+        
         return {
             ...user,
             tasksAssigned: userTasks.length,
             tasksDone,
-            lastActive
+            lastActive: lastActiveTimes[user.uid] || '... a while ago',
         };
     })
-  }, []);
+  }, [users, lastActiveTimes]);
 
-  if (currentUser.role !== 'Project Manager') {
+  if (!currentUser || currentUser.role !== 'Project Manager') {
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <p>Redirecting...</p>
+        <p>Verifying permissions...</p>
       </div>
     );
   }
@@ -132,15 +150,15 @@ export default function AdminPage() {
             </TableHeader>
             <TableBody>
               {teamWorkInfo.map((member) => (
-                <TableRow key={member.id}>
+                <TableRow key={member.uid}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src={member.avatarUrl} alt={member.name} />
-                        <AvatarFallback>{member.initials}</AvatarFallback>
+                        <AvatarImage src={member.photoURL ?? undefined} alt={member.displayName ?? ''} />
+                        <AvatarFallback>{member.displayName?.charAt(0) ?? 'U'}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium">{member.name}</p>
+                        <p className="font-medium">{member.displayName}</p>
                         <p className="text-sm text-muted-foreground">{member.role}</p>
                       </div>
                     </div>

@@ -79,7 +79,7 @@ export function AppHeader() {
                     <Button variant="ghost" size="icon" className="rounded-full relative">
                       <Flame className="h-5 w-5 text-orange-500" />
                       <span className="sr-only">Streak</span>
-                       <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                       <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
                         {streak}
                       </span>
                     </Button>

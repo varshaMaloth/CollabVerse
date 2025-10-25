@@ -2,7 +2,6 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     instrumentationHook: false,
   },
@@ -35,14 +34,20 @@ const nextConfig: NextConfig = {
     ],
   },
   webpack: (config, { isServer }) => {
+    // Prevent async_hooks from breaking browser builds
     if (!isServer) {
-      // Don't resolve 'fs' or 'async_hooks' modules on the client to prevent errors on build
       config.resolve.fallback = {
-        ...config.resolve.fallback,
-        'async_hooks': false,
-        'fs': false,
+        async_hooks: false,
+        fs: false,
       };
     }
+    
+    // Disable OpenTelemetry completely
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "@opentelemetry/api": false,
+      "@opentelemetry/context-async-hooks": false,
+    };
 
     return config;
   },

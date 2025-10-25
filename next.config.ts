@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
       };
     }
     
-    // Disable OpenTelemetry completely
+    // Disable OpenTelemetry completely by aliasing them to false
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       "@opentelemetry/api": false,

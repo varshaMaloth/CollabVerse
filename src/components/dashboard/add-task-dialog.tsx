@@ -20,22 +20,69 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import type { TaskStatus } from '@/lib/types';
+import type { Task, TaskStatus } from '@/lib/types';
+import { useFirestore } from '@/firebase';
+import { addDoc, collection } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export function AddTaskDialog() {
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const firestore = useFirestore();
+  const { toast } = useToast();
 
-  // In a real app, this would submit to a server action or API
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsSubmitting(true);
+
+    if (!firestore) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Firestore is not available.',
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    console.log('New Task:', data);
-    // Here you would typically call a server action to create the task
-    // and then revalidate the data on the page to show the new task.
-    setOpen(false); // Close the dialog on submit
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
+    const status = formData.get('status') as TaskStatus;
+
+    const newTask = {
+      title,
+      description,
+      status,
+      assignees: [],
+      comments: [],
+    };
+
+    const tasksCollectionRef = collection(firestore, 'tasks');
+    
+    addDoc(tasksCollectionRef, newTask)
+      .then((docRef) => {
+        toast({
+          title: 'Task Created',
+          description: `Task "${title}" has been successfully added.`,
+        });
+        setOpen(false);
+      })
+      .catch((serverError) => {
+        const permissionError = new FirestorePermissionError({
+          path: tasksCollectionRef.path,
+          operation: 'create',
+          requestResourceData: newTask,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -89,7 +136,16 @@ export function AddTaskDialog() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Create Task</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                'Create Task'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

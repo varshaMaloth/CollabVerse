@@ -34,15 +34,22 @@ const nextConfig: NextConfig = {
     ],
   },
   webpack: (config, { isServer }) => {
-    // Prevent async_hooks from breaking browser builds
+    
+    // --- 1. Client-Side (Browser) Configuration ---
     if (!isServer) {
       config.resolve.fallback = {
-        async_hooks: false,
-        fs: false,
+        // This is the CRITICAL line: alias the problematic Node.js module to 'false'
+        'async_hooks': false, 
+        
+        // You might need to add other Node.js core modules here if they cause issues later:
+        'fs': false, 
+        
+        // Preserve any existing fallbacks
+        ...config.resolve.fallback,
       };
     }
     
-    // Disable OpenTelemetry completely by aliasing them to false
+    // --- 2. Disable OpenTelemetry completely by aliasing them to false
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       "@opentelemetry/api": false,

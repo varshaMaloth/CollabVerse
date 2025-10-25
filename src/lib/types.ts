@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export type User = {
   id: string;
   name: string;
@@ -46,10 +48,9 @@ export type ProjectDocument = {
 };
 
 export type CalendarEvent = {
-  id: string;
+  uid: string;
   title: string;
-  start: Date;
-  end: Date;
+  start: Timestamp;
   type: 'meeting' | 'deadline';
 };
 

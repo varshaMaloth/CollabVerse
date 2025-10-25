@@ -71,6 +71,40 @@
         "title",
         "status"
       ]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Represents a calendar event or deadline.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique ID for the event document."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the event."
+        },
+        "start": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The start date and time of the event."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "meeting",
+            "deadline"
+          ],
+          "description": "The type of the event."
+        }
+      },
+      "required": [
+        "uid",
+        "title",
+        "start",
+        "type"
+      ]
     }
   },
   "auth": {
@@ -90,6 +124,12 @@
         "$ref": "#/entities/Task"
       },
       "description": "Stores individual task details."
+    },
+    "/events/{eventId}": {
+      "schema": {
+        "$ref": "#/entities/Event"
+      },
+      "description": "Stores calendar events and deadlines."
     }
   }
 }

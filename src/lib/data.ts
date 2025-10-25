@@ -1,4 +1,4 @@
-import type { User, Task, ProjectDocument, CalendarEvent, Repository } from '@/lib/types';
+import type { User, ProjectDocument, Repository } from '@/lib/types';
 
 export const users: User[] = [
   { id: 'user-1', name: 'Alice', avatarUrl: 'https://picsum.photos/seed/user1/40/40', initials: 'A', role: 'Project Manager' },
@@ -13,13 +13,6 @@ export const documents: ProjectDocument[] = [
   { id: 'doc-3', title: 'API Design Guidelines', owner: users[1], lastModified: '2024-05-18T11:45:00Z', url: '#' },
   { id: 'doc-4', title: 'User Research Findings', owner: users[0], lastModified: '2024-05-17T09:00:00Z', url: '#' },
   { id: 'doc-5', title: 'Sprint Planning Notes', owner: users[2], lastModified: '2024-05-21T14:00:00Z', url: '#' },
-];
-
-export const events: CalendarEvent[] = [
-  { id: 'event-1', title: 'Daily Stand-up', start: new Date(new Date().setDate(new Date().getDate())), end: new Date(new Date().setHours(9, 30)), type: 'meeting' },
-  { id: 'event-2', title: 'Sprint Planning', start: new Date(new Date().setDate(new Date().getDate() + 1)), end: new Date(new Date().setHours(11, 0)), type: 'meeting' },
-  { id: 'event-3', title: 'Design Review', start: new Date(new Date().setDate(new Date().getDate() + 2)), end: new Date(new Date().setHours(14, 0)), type: 'meeting' },
-  { id: 'event-4', title: 'Alpha Release Deadline', start: new Date(new Date().setDate(new Date().getDate() + 4)), end: new Date(new Date().setHours(17, 0)), type: 'deadline' },
 ];
 
 export const repositories: Repository[] = [

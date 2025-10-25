@@ -19,9 +19,10 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { GitFork, Star, Search } from 'lucide-react';
+import { GitFork, Star, Search, PlusCircle } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 function LanguageBadge({ language }: { language: string }) {
     let colorClass = 'bg-gray-200 text-gray-800';
@@ -45,10 +46,18 @@ export default function RepositoriesPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Repositories</CardTitle>
-        <CardDescription>
-          A list of all GitHub repositories for this project.
-        </CardDescription>
+        <div className="flex items-center justify-between">
+            <div>
+                <CardTitle>Repositories</CardTitle>
+                <CardDescription>
+                  A list of all GitHub repositories for this project.
+                </CardDescription>
+            </div>
+            <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Repository
+            </Button>
+        </div>
         <div className="relative pt-2">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input

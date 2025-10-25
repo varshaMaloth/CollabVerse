@@ -104,7 +104,7 @@ export default function AdminDashboard() {
              <div className="h-[200px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={tasksByStatus}>
-                        <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
+                        <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                         <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                         <Tooltip
                             contentStyle={{

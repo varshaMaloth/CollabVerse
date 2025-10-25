@@ -15,11 +15,21 @@ import {
 import { useAuth, useUser } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { useDoc } from '@/firebase/firestore/use-doc';
+import { doc } from 'firebase/firestore';
+import { useFirestore } from '@/firebase';
+import type { UserProfile } from '@/lib/types';
+
 
 export function UserNav() {
   const { data: user } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
+
+  const userDocRef = user ? doc(firestore, 'users', user.uid) : null;
+  const { data: userProfile } = useDoc<UserProfile>(userDocRef);
+
 
   const handleSignOut = async () => {
     if (!auth) return;
@@ -48,6 +58,11 @@ export function UserNav() {
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>
+            {userProfile?.role && (
+                <p className="text-xs leading-none text-muted-foreground pt-1">
+                    Role: {userProfile.role}
+                </p>
+            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

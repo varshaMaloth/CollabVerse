@@ -38,14 +38,7 @@ export default function LoginPage() {
               CollabVerse
             </div>
             <div className="relative z-20 mt-auto">
-              <blockquote className="space-y-2">
-                <p className="text-lg">
-                  “This platform has transformed how our team collaborates. It’s
-                  intuitive, powerful, and brings all our project management
-                  needs under one roof.”
-                </p>
-                <footer className="text-sm">Sofia Davis, Project Manager</footer>
-              </blockquote>
+              
             </div>
           </div>
           <div className="lg:p-8 flex items-center justify-center">

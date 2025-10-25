@@ -22,6 +22,7 @@ export function AppHeader() {
   const pathname = usePathname();
   const pageTitle = pathname.split('/').pop()?.replace('-', ' ') || 'Dashboard';
   const [searchOpen, setSearchOpen] = useState(false);
+  const streak = 7; // Mock streak number
 
   return (
     <header className="flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6 sticky top-0 z-30">
@@ -75,13 +76,16 @@ export function AppHeader() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full">
+                    <Button variant="ghost" size="icon" className="rounded-full relative">
                       <Flame className="h-5 w-5 text-orange-500" />
                       <span className="sr-only">Streak</span>
+                       <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                        {streak}
+                      </span>
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>You're on a streak for completing tasks on time!</p>
+                    <p>You're on a {streak}-day streak!</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

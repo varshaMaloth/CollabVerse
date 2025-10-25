@@ -34,23 +34,19 @@ const nextConfig: NextConfig = {
     ],
   },
   webpack: (config, { isServer }) => {
-    
     // --- 1. Client-Side (Browser) Configuration ---
     if (!isServer) {
+      // Add fallbacks for Node.js core modules you want to mock in the browser.
+      // This prevents 'Module not found' errors.
       config.resolve.fallback = {
-        // This is the CRITICAL line: alias the problematic Node.js module to 'false'
-        'async_hooks': false, 
-        
-        // You might need to add other Node.js core modules here if they cause issues later:
-        'fs': false, 
+        ...(config.resolve.fallback || {}), // Spread existing fallbacks
+        'async_hooks': false,
+        'fs': false,
         'net': false,
         'tls': false,
-        
-        // Preserve any existing fallbacks
-        ...config.resolve.fallback,
       };
     }
-    
+
     // --- 2. Disable OpenTelemetry completely by aliasing them to false
     config.resolve.alias = {
       ...(config.resolve.alias || {}),

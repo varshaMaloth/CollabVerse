@@ -1,5 +1,7 @@
 
 import type {NextConfig} from 'next';
+import * as path from 'path';
+import * as webpack from 'webpack';
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -36,22 +38,28 @@ const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
     // --- 1. Client-Side (Browser) Configuration ---
     if (!isServer) {
-      // Add fallbacks for Node.js core modules you want to mock in the browser.
-      // This prevents 'Module not found' errors.
-      config.resolve.fallback = {
-        ...(config.resolve.fallback || {}), // Spread existing fallbacks
-        'async_hooks': false,
-        'fs': false,
-        'net': false,
-        'tls': false,
-      };
+        // --- 1a. Shim out server-only modules ---
+        config.plugins.push(
+            new webpack.NormalModuleReplacementPlugin(
+                /@opentelemetry\/context-async-hooks/,
+                path.resolve(__dirname, 'src/shims/opentelemetry-client-shim.js')
+            )
+        );
+
+        // --- 1b. Add fallbacks for other Node.js core modules ---
+        config.resolve.fallback = {
+            ...(config.resolve.fallback || {}), // Spread existing fallbacks
+            'async_hooks': path.resolve(__dirname, 'src/shims/async_hooks.js'),
+            'fs': false,
+            'net': false,
+            'tls': false,
+        };
     }
 
     // --- 2. Disable OpenTelemetry completely by aliasing them to false
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       "@opentelemetry/api": false,
-      "@opentelemetry/context-async-hooks": false,
     };
 
     return config;

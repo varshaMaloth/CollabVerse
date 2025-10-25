@@ -55,25 +55,23 @@ export default function WelcomePage() {
       role: selectedRole,
     };
 
-    setDoc(userRef, userProfile, { merge: true })
-      .then(() => {
-        toast({
-          title: 'Welcome!',
-          description: 'Your profile has been created.',
-        });
-        router.push('/dashboard');
-      })
-      .catch((serverError) => {
-        const permissionError = new FirestorePermissionError({
-          path: userRef.path,
-          operation: 'create',
-          requestResourceData: userProfile,
-        });
-        errorEmitter.emit('permission-error', permissionError);
-      })
-      .finally(() => {
-        setIsSubmitting(false);
+    try {
+      await setDoc(userRef, userProfile, { merge: true });
+      toast({
+        title: 'Welcome!',
+        description: 'Your profile has been created.',
       });
+      router.push('/dashboard');
+    } catch (serverError) {
+      const permissionError = new FirestorePermissionError({
+        path: userRef.path,
+        operation: 'create',
+        requestResourceData: userProfile,
+      });
+      errorEmitter.emit('permission-error', permissionError);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   if (userLoading) {

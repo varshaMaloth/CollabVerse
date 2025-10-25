@@ -32,10 +32,11 @@ pathname: '/**',
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Don't resolve 'fs' module on the client to prevent errors on build
+      // Don't resolve 'fs' or 'async_hooks' modules on the client to prevent errors on build
       config.resolve.fallback = {
         ...config.resolve.fallback,
         'async_hooks': false,
+        'fs': false,
       };
     }
 

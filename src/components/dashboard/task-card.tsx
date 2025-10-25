@@ -46,12 +46,12 @@ export function TaskCard({ task }: { task: Task }) {
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <div className="flex -space-x-2">
-          {task.assignees.map((user) => (
+          {task.assignees && task.assignees.map((user) => (
             <AssigneeAvatar key={user.id} user={user} />
           ))}
         </div>
         <div className="flex items-center gap-4 text-muted-foreground">
-          {task.comments.length > 0 && (
+          {task.comments && task.comments.length > 0 && (
             <div className="flex items-center gap-1">
               <MessageSquare className="h-4 w-4" />
               <span>{task.comments.length}</span>

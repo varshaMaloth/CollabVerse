@@ -12,23 +12,23 @@ export type UserProfile = {
   displayName?: string | null;
   photoURL?: string | null;
   role?: 'Project Manager' | 'Team Member' | 'Mentor' | 'Viewer';
-}
+};
 
 export type TaskStatus = 'To Do' | 'In Progress' | 'Done';
 
 export type Comment = {
   id: string;
-  user: User;
+  user: User; // Will be migrated to UserProfile later
   comment: string;
   timestamp: string;
 };
 
 export type Task = {
-  id: string;
+  uid: string;
   title: string;
   description: string;
   status: TaskStatus;
-  assignees: User[];
+  assignees: User[]; // Will be migrated to UserProfile later
   githubPr?: {
     url: string;
     number: number;

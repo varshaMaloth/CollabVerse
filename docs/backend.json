@@ -38,6 +38,39 @@
         "uid",
         "email"
       ]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Represents a task in the project management system.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique ID for the task document."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the task."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the task."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "To Do",
+            "In Progress",
+            "Done"
+          ],
+          "description": "The current status of the task."
+        }
+      },
+      "required": [
+        "uid",
+        "title",
+        "status"
+      ]
     }
   },
   "auth": {
@@ -51,6 +84,12 @@
         "$ref": "#/entities/UserProfile"
       },
       "description": "Stores user profile information."
+    },
+    "/tasks/{taskId}": {
+      "schema": {
+        "$ref": "#/entities/Task"
+      },
+      "description": "Stores individual task details."
     }
   }
 }

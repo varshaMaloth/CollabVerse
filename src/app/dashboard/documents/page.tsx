@@ -7,17 +7,25 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
-import { FileText } from 'lucide-react';
+import { FileText, PlusCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function DocumentsPage() {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Project Documents</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+            <CardTitle>Project Documents</CardTitle>
+            <CardDescription>A list of all documents related to this project.</CardDescription>
+        </div>
+        <Button>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Document
+        </Button>
       </CardHeader>
       <CardContent>
         <Table>

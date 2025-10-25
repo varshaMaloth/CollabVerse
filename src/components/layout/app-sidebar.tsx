@@ -65,15 +65,16 @@ export function AppSidebar() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" className="w-full justify-start">
-                  <Link
-                    href="#"
-                    className="flex items-center gap-3 rounded-lg"
-                  >
-                    <Settings className="h-4 w-4" />
-                    <span>Settings</span>
-                  </Link>
-                </Button>
+                <Link
+                  href="/dashboard/settings"
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                    pathname === '/dashboard/settings' && 'bg-muted text-primary'
+                  )}
+                >
+                  <Settings className="h-4 w-4" />
+                  <span>Settings</span>
+                </Link>
               </TooltipTrigger>
               <TooltipContent side="right">
                 <p>Settings</p>

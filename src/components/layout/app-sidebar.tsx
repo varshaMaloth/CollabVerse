@@ -9,6 +9,7 @@ import {
   BarChart2,
   Settings,
   Briefcase,
+  Github,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ import {
 const navItems = [
   { href: '/dashboard', icon: LayoutGrid, label: 'Dashboard' },
   { href: '/dashboard/calendar', icon: Calendar, label: 'Calendar' },
+  { href: '/dashboard/repositories', icon: Github, label: 'Repositories' },
   { href: '/dashboard/documents', icon: FileText, label: 'Documents' },
   { href: '/dashboard/reports', icon: BarChart2, label: 'Reports' },
 ];

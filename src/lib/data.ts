@@ -1,4 +1,4 @@
-import type { User, Task, ProjectDocument, CalendarEvent } from '@/lib/types';
+import type { User, Task, ProjectDocument, CalendarEvent, Repository } from '@/lib/types';
 
 export const users: User[] = [
   { id: 'user-1', name: 'Alice', avatarUrl: 'https://picsum.photos/seed/user1/40/40', initials: 'A' },
@@ -94,4 +94,37 @@ export const events: CalendarEvent[] = [
   { id: 'event-2', title: 'Sprint Planning', start: new Date(new Date().setDate(new Date().getDate() + 1)), end: new Date(new Date().setHours(11, 0)), type: 'meeting' },
   { id: 'event-3', title: 'Design Review', start: new Date(new Date().setDate(new Date().getDate() + 2)), end: new Date(new Date().setHours(14, 0)), type: 'meeting' },
   { id: 'event-4', title: 'Alpha Release Deadline', start: new Date(new Date().setDate(new Date().getDate() + 4)), end: new Date(new Date().setHours(17, 0)), type: 'deadline' },
+];
+
+export const repositories: Repository[] = [
+    {
+      id: 'repo-1',
+      name: 'project-hub-frontend',
+      description: 'The frontend for our amazing Project Hub application, built with Next.js.',
+      url: '#',
+      language: 'TypeScript',
+      stars: 128,
+      forks: 12,
+      lastCommit: '2 hours ago',
+    },
+    {
+      id: 'repo-2',
+      name: 'project-hub-backend',
+      description: 'The backend services and API for Project Hub.',
+      url: '#',
+      language: 'Go',
+      stars: 95,
+      forks: 8,
+      lastCommit: '5 hours ago',
+    },
+    {
+      id: 'repo-3',
+      name: 'design-system',
+      description: 'Shared UI components and design tokens.',
+      url: '#',
+      language: 'TypeScript',
+      stars: 210,
+      forks: 25,
+      lastCommit: '1 day ago',
+    },
 ];

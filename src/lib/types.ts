@@ -43,3 +43,14 @@ export type CalendarEvent = {
   end: Date;
   type: 'meeting' | 'deadline';
 };
+
+export type Repository = {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  language: string;
+  stars: number;
+  forks: number;
+  lastCommit: string;
+};

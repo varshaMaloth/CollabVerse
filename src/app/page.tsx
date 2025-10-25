@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useUser } from '@/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
+import { Loading } from '@/components/layout/loading';
 
 export default function Home() {
   const router = useRouter();
@@ -27,9 +28,5 @@ export default function Home() {
     }
   }, [router, user, loading, firestore]);
 
-  return (
-    <div className="flex h-screen w-full items-center justify-center bg-background">
-      <p className="text-foreground">Loading CollabVerse...</p>
-    </div>
-  );
+  return <Loading text="Loading CollabVerse..." />;
 }

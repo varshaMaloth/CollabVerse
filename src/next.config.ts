@@ -43,6 +43,8 @@ const nextConfig: NextConfig = {
         
         // You might need to add other Node.js core modules here if they cause issues later:
         'fs': false, 
+        'net': false,
+        'tls': false,
         
         // Preserve any existing fallbacks
         ...config.resolve.fallback,

@@ -23,6 +23,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { Loading } from '@/components/layout/loading';
 
 const roles = ['Project Manager', 'Team Member', 'Mentor', 'Viewer'];
 
@@ -75,11 +76,7 @@ export default function WelcomePage() {
   };
   
   if (userLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!user) {

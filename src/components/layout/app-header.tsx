@@ -1,12 +1,18 @@
 'use client';
 
-import { Menu, Search, Bell } from 'lucide-react';
+import { Menu, Search, Bell, Flame } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { AppSidebar } from './app-sidebar';
 import { UserNav } from './user-nav';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -34,6 +40,19 @@ export function AppHeader() {
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Flame className="h-5 w-5 text-orange-500" />
+                  <span className="sr-only">Streak</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>You're on a streak for completing tasks on time!</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Button variant="ghost" size="icon" className="rounded-full">
             <Bell className="h-5 w-5" />
             <span className="sr-only">Notifications</span>

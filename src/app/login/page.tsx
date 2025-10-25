@@ -48,8 +48,8 @@ export default function LoginPage() {
               </blockquote>
             </div>
           </div>
-          <div className="lg:p-8">
-            <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+          <div className="lg:p-8 flex items-center justify-center">
+            <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]">
               <Card>
                 <CardHeader className="text-center">
                   <CardTitle>Welcome Back</CardTitle>

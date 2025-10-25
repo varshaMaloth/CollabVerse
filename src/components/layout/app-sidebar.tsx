@@ -11,10 +11,11 @@ import {
   Briefcase,
   Github,
   Users,
+  Shield,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { users } from '@/lib/data';
 import {
   Tooltip,
   TooltipContent,
@@ -31,8 +32,15 @@ const navItems = [
   { href: '/dashboard/reports', icon: BarChart2, label: 'Reports' },
 ];
 
+const adminNavItem = {
+  href: '/dashboard/admin',
+  icon: Shield,
+  label: 'Admin',
+};
+
 export function AppSidebar() {
   const pathname = usePathname();
+  const currentUser = users[0]; // In a real app, this would come from an auth provider
 
   return (
     <aside className="hidden border-r bg-card md:block">
@@ -61,6 +69,18 @@ export function AppSidebar() {
                 </Link>
               );
             })}
+             {currentUser.role === 'Project Manager' && (
+              <Link
+                href={adminNavItem.href}
+                className={cn(
+                  'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                  pathname === adminNavItem.href && 'bg-muted text-primary'
+                )}
+              >
+                <adminNavItem.icon className="h-4 w-4" />
+                {adminNavItem.label}
+              </Link>
+            )}
           </nav>
         </div>
         <div className="mt-auto p-4">

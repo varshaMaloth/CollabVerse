@@ -1,20 +1,16 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActions } from '@genkit-ai/next/use-actions';
 import { generateReportAction } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, Loader2, MessageSquare, ThumbsDown, ThumbsUp } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
-const initialState = {
-  status: 'idle' as const,
-  message: '',
-};
+import { Bot, Loader2, MessageSquare } from 'lucide-react';
+import { GenerateWeeklyProgressReportInputSchema } from '@/ai/flows/generate-weekly-progress-report';
+import { useFormStatus } from 'react-dom';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -43,33 +39,60 @@ type ReportGeneratorProps = {
 };
 
 export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatus }: ReportGeneratorProps) {
-  const [state, formAction] = useFormState(generateReportAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
-  const [feedback, setFeedback] = useState<'good' | 'bad' | null>(null);
+  
+  const { last, isStreaming, run } = useActions<typeof GenerateWeeklyProgressReportInputSchema, string>({
+    action: generateReportAction,
+    onFinish: (result) => {
+      if (result.status === 'error') {
+        toast({
+          title: "Error",
+          description: result.error.message || "Failed to generate report.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success!",
+          description: "Report generated successfully.",
+        });
+      }
+    }
+  });
 
+  const handleFormSubmit = async (formData: FormData) => {
+    const validatedFields = GenerateWeeklyProgressReportInputSchema.safeParse({
+        taskCompletionSummary: formData.get('taskCompletionSummary'),
+        upcomingDeadlines: formData.get('upcomingDeadlines'),
+        overallProjectStatus: formData.get('overallProjectStatus'),
+    });
 
-  useEffect(() => {
-    if (state.status === 'success') {
+    if (!validatedFields.success) {
+      const fieldErrors = validatedFields.error.flatten().fieldErrors;
+      let errorMsg = 'Please check the form for errors.';
+      if (fieldErrors.taskCompletionSummary) {
+        errorMsg = fieldErrors.taskCompletionSummary[0];
+      } else if (fieldErrors.upcomingDeadlines) {
+        errorMsg = fieldErrors.upcomingDeadlines[0];
+      } else if (fieldErrors.overallProjectStatus) {
+        errorMsg = fieldErrors.overallProjectStatus[0];
+      }
       toast({
-        title: "Success!",
-        description: state.message,
-      });
-      // We don't reset the form anymore to keep the pre-filled data.
-      // formRef.current?.reset();
-    } else if (state.status === 'error' && state.message && !state.fieldErrors) {
-      toast({
-        title: "Error",
-        description: state.message,
+        title: "Validation Error",
+        description: errorMsg,
         variant: "destructive",
       });
+      return;
     }
-  }, [state, toast]);
+    
+    await run(validatedFields.data);
+  };
+
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <Card>
-        <form action={formAction} ref={formRef}>
+        <form action={handleFormSubmit} ref={formRef}>
           <CardHeader>
             <CardTitle>Generate Weekly Report</CardTitle>
             <CardDescription>
@@ -86,9 +109,6 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
                 rows={4}
                 defaultValue={defaultSummary}
               />
-              {state.fieldErrors?.taskCompletionSummary && (
-                <p className="text-sm text-destructive">{state.fieldErrors.taskCompletionSummary[0]}</p>
-              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="upcomingDeadlines">Upcoming Deadlines</Label>
@@ -99,9 +119,6 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
                 rows={3}
                 defaultValue={defaultDeadlines}
               />
-              {state.fieldErrors?.upcomingDeadlines && (
-                <p className="text-sm text-destructive">{state.fieldErrors.upcomingDeadlines[0]}</p>
-              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="overallProjectStatus">Overall Project Status</Label>
@@ -112,13 +129,22 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
                 rows={3}
                 defaultValue={defaultStatus}
               />
-              {state.fieldErrors?.overallProjectStatus && (
-                <p className="text-sm text-destructive">{state.fieldErrors.overallProjectStatus[0]}</p>
-              )}
             </div>
           </CardContent>
           <CardFooter>
-            <SubmitButton />
+             <Button type="submit" disabled={isStreaming}>
+              {isStreaming ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Bot className="mr-2 h-4 w-4" />
+                  Generate Report
+                </>
+              )}
+            </Button>
           </CardFooter>
         </form>
       </Card>
@@ -129,22 +155,22 @@ export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatu
           <CardDescription>The AI-generated report will appear below.</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-4">
-          {state.status === 'loading' && (
+          {isStreaming && !last && (
             <div className="flex items-center justify-center h-full">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           )}
-          {state.report && (
+          {last?.output && (
             <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap rounded-md bg-muted p-4">
-              {state.report}
+              {last.output}
             </div>
           )}
-          {state.status === 'idle' && !state.report && (
+          {!isStreaming && !last?.output && (
             <div className="flex items-center justify-center h-full text-center text-muted-foreground p-4">
               <p>Your report will be displayed here once generated.</p>
             </div>
           )}
-          {state.report && (
+          {last?.output && (
              <div className="space-y-3 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
                 <p className="text-sm font-medium flex items-center gap-2">
                   <MessageSquare className="h-4 w-4" />

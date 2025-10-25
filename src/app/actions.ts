@@ -1,13 +1,8 @@
 'use server';
 
-import { generateWeeklyProgressReport } from '@/ai/flows/generate-weekly-progress-report';
+import { generateWeeklyProgressReportFlow, GenerateWeeklyProgressReportInputSchema } from '@/ai/flows/generate-weekly-progress-report';
+import { runFlow } from 'genkit/next';
 import { z } from 'zod';
-
-const ReportSchema = z.object({
-  taskCompletionSummary: z.string().min(10, { message: 'Please provide a more detailed summary.' }),
-  upcomingDeadlines: z.string().min(10, { message: 'Please provide more details on deadlines.' }),
-  overallProjectStatus: z.string().min(10, { message: 'Please provide a more detailed status.' }),
-});
 
 type State = {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -20,14 +15,15 @@ type State = {
   };
 };
 
-export async function generateReportAction(prevState: State, formData: FormData): Promise<State> {
-  const validatedFields = ReportSchema.safeParse({
+export async function generateReportAction(formData: FormData) {
+  const validatedFields = GenerateWeeklyProgressReportInputSchema.safeParse({
     taskCompletionSummary: formData.get('taskCompletionSummary'),
     upcomingDeadlines: formData.get('upcomingDeadlines'),
     overallProjectStatus: formData.get('overallProjectStatus'),
   });
 
   if (!validatedFields.success) {
+    // This part is not fully utilized by the new implementation but kept for schema validation logic.
     return {
       status: 'error',
       message: 'Please check the form for errors.',
@@ -35,17 +31,5 @@ export async function generateReportAction(prevState: State, formData: FormData)
     };
   }
 
-  try {
-    const result = await generateWeeklyProgressReport(validatedFields.data);
-    return {
-      status: 'success',
-      message: 'Report generated successfully!',
-      report: result.report,
-    };
-  } catch (error) {
-    return {
-      status: 'error',
-      message: 'Failed to generate report. Please try again.',
-    };
-  }
+  return runFlow(generateWeeklyProgressReportFlow, validatedFields.data);
 }

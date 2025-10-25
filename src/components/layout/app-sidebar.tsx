@@ -11,7 +11,6 @@ import {
   Briefcase,
   Github,
   Users,
-  Timer,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -30,7 +29,6 @@ const navItems = [
   { href: '/dashboard/repositories', icon: Github, label: 'Repositories' },
   { href: '/dashboard/documents', icon: FileText, label: 'Documents' },
   { href: '/dashboard/reports', icon: BarChart2, label: 'Reports' },
-  { href: '/dashboard/worksync', icon: Timer, label: 'Work Sync' },
 ];
 
 export function AppSidebar() {

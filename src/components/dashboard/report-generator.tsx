@@ -35,7 +35,13 @@ function SubmitButton() {
   );
 }
 
-export function ReportGenerator() {
+type ReportGeneratorProps = {
+  defaultSummary?: string;
+  defaultDeadlines?: string;
+  defaultStatus?: string;
+};
+
+export function ReportGenerator({ defaultSummary, defaultDeadlines, defaultStatus }: ReportGeneratorProps) {
   const [state, formAction] = useFormState(generateReportAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
@@ -46,7 +52,8 @@ export function ReportGenerator() {
         title: "Success!",
         description: state.message,
       });
-      formRef.current?.reset();
+      // We don't reset the form anymore to keep the pre-filled data.
+      // formRef.current?.reset(); 
     } else if (state.status === 'error' && state.message && !state.fieldErrors) {
       toast({
         title: "Error",
@@ -63,7 +70,7 @@ export function ReportGenerator() {
           <CardHeader>
             <CardTitle>Generate Weekly Report</CardTitle>
             <CardDescription>
-              Fill in the details below to automatically generate a progress report.
+              The fields below are pre-filled with project data. Click "Generate Report" to start.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -74,6 +81,7 @@ export function ReportGenerator() {
                 name="taskCompletionSummary"
                 placeholder="e.g., Completed the design mockups for the new dashboard..."
                 rows={4}
+                defaultValue={defaultSummary}
               />
               {state.fieldErrors?.taskCompletionSummary && (
                 <p className="text-sm text-destructive">{state.fieldErrors.taskCompletionSummary[0]}</p>
@@ -86,6 +94,7 @@ export function ReportGenerator() {
                 name="upcomingDeadlines"
                 placeholder="e.g., Final version of the landing page is due EOD Friday..."
                 rows={3}
+                defaultValue={defaultDeadlines}
               />
               {state.fieldErrors?.upcomingDeadlines && (
                 <p className="text-sm text-destructive">{state.fieldErrors.upcomingDeadlines[0]}</p>
@@ -98,6 +107,7 @@ export function ReportGenerator() {
                 name="overallProjectStatus"
                 placeholder="e.g., The project is on track. The development team is currently..."
                 rows={3}
+                defaultValue={defaultStatus}
               />
               {state.fieldErrors?.overallProjectStatus && (
                 <p className="text-sm text-destructive">{state.fieldErrors.overallProjectStatus[0]}</p>
@@ -126,9 +136,14 @@ export function ReportGenerator() {
               {state.report}
             </div>
           )}
-          {state.status === 'idle' && (
+          {state.status === 'idle' && !state.report && (
             <div className="flex items-center justify-center h-full text-center text-muted-foreground p-4">
               <p>Your report will be displayed here once generated.</p>
+            </div>
+          )}
+           {state.status === 'idle' && state.report && (
+            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap rounded-md bg-muted p-4">
+              {state.report}
             </div>
           )}
         </CardContent>

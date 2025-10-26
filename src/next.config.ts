@@ -38,8 +38,8 @@ const nextConfig: NextConfig = {
     // --- 1. Client-Side (Browser) Configuration ---
     if (!isServer) {
       config.resolve.fallback = {
-        // This is the CRITICAL line: alias the problematic Node.js module to 'false'
-        'async_hooks': false, 
+        // This is the CRITICAL line: alias the problematic Node.js module to a client-side shim
+        'async_hooks': require.resolve('./src/shims/async_hooks.js'), 
         
         // You might need to add other Node.js core modules here if they cause issues later:
         'fs': false, 

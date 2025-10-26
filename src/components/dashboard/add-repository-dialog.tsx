@@ -43,17 +43,17 @@ export function AddRepositoryDialog() {
 
     const formData = new FormData(event.currentTarget);
     const url = formData.get('url') as string;
-    
+
     // Basic URL parsing to get name
     let name = 'New Repository';
     try {
-        const path = new URL(url).pathname;
-        const parts = path.split('/').filter(p => p);
-        if (parts.length >= 1) {
-            name = parts[parts.length - 1];
-        }
+      const path = new URL(url).pathname;
+      const parts = path.split('/').filter(p => p);
+      if (parts.length >= 1) {
+        name = parts[parts.length - 1];
+      }
     } catch (e) {
-        // Ignore invalid URL, will use default name
+      // Ignore invalid URL, will use default name
     }
 
     const newRepo = {
@@ -68,7 +68,7 @@ export function AddRepositoryDialog() {
     };
 
     const reposCollectionRef = collection(firestore, 'repositories');
-    
+
     addDoc(reposCollectionRef, newRepo)
       .then((docRef) => {
         toast({
@@ -100,13 +100,13 @@ export function AddRepositoryDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add New Repository</DialogTitle>
+          <DialogDescription>
+            Enter the URL of the GitHub repository you want to link.
+          </DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Add New Repository</DialogTitle>
-            <DialogDescription>
-              Enter the URL of the GitHub repository you want to link.
-            </DialogDescription>
-          </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="url" className="text-right">

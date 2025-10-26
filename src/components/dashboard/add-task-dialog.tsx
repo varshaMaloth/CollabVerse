@@ -63,7 +63,7 @@ export function AddTaskDialog() {
     };
 
     const tasksCollectionRef = collection(firestore, 'tasks');
-    
+
     addDoc(tasksCollectionRef, newTask)
       .then((docRef) => {
         toast({
@@ -95,13 +95,13 @@ export function AddTaskDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add New Task</DialogTitle>
+          <DialogDescription>
+            Fill out the details below to create a new task.
+          </DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Add New Task</DialogTitle>
-            <DialogDescription>
-              Fill out the details below to create a new task.
-            </DialogDescription>
-          </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">

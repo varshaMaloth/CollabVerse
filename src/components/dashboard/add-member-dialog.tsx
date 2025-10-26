@@ -34,15 +34,14 @@ export function AddMemberDialog() {
     event.preventDefault();
     setIsSubmitting(true);
 
-    // In a real application, you would handle inviting users here.
-    // For now, we'll just simulate a delay and show a success message.
+    // Simulate delay and show a success message
     setTimeout(() => {
-        toast({
-            title: 'Invitation Sent',
-            description: `An invitation has been sent to the new member.`,
-        });
-        setIsSubmitting(false);
-        setOpen(false);
+      toast({
+        title: 'Invitation Sent',
+        description: `An invitation has been sent to the new member.`,
+      });
+      setIsSubmitting(false);
+      setOpen(false);
     }, 1000);
   };
 
@@ -55,13 +54,13 @@ export function AddMemberDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add New Team Member</DialogTitle>
+          <DialogDescription>
+            Enter the details of the new team member to send an invitation.
+          </DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Add New Team Member</DialogTitle>
-            <DialogDescription>
-              Enter the details of the new team member to send an invitation.
-            </DialogDescription>
-          </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">

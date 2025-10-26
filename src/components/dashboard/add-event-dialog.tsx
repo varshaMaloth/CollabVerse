@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PlusCircle, Loader2, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { PlusCircle, Loader2, Calendar as CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useFirestore } from '@/firebase';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
@@ -26,8 +26,8 @@ import { cn } from '@/lib/utils';
 import type { CalendarEvent } from '@/lib/types';
 
 type AddEventDialogProps = {
-    type: 'meeting' | 'deadline'
-}
+  type: 'meeting' | 'deadline'
+};
 
 export function AddEventDialog({ type }: AddEventDialogProps) {
   const [open, setOpen] = useState(false);
@@ -54,7 +54,7 @@ export function AddEventDialog({ type }: AddEventDialogProps) {
     const title = formData.get('title') as string;
     const time = formData.get('time') as string;
     const meetingLink = formData.get('meetingLink') as string;
-    
+
     const [hours, minutes] = time.split(':').map(Number);
     const startDate = new Date(date);
     startDate.setHours(hours, minutes);
@@ -64,13 +64,12 @@ export function AddEventDialog({ type }: AddEventDialogProps) {
       start: Timestamp.fromDate(startDate),
       type,
     };
-    
     if (type === 'meeting' && meetingLink) {
-        newEvent.meetingLink = meetingLink;
+      newEvent.meetingLink = meetingLink;
     }
 
     const eventsCollectionRef = collection(firestore, 'events');
-    
+
     addDoc(eventsCollectionRef, newEvent)
       .then(() => {
         toast({
@@ -100,18 +99,18 @@ export function AddEventDialog({ type }: AddEventDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-            {type === 'meeting' ? <PlusCircle className="mr-2 h-4 w-4" /> : <PlusCircle className="mr-2 h-4 w-4" />}
-            {buttonLabel}
+          <PlusCircle className="mr-2 h-4 w-4" />
+          {buttonLabel}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{buttonLabel}</DialogTitle>
+          <DialogDescription>
+            Fill out the details below to create a new {type}.
+          </DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>{buttonLabel}</DialogTitle>
-            <DialogDescription>
-              Fill out the details below to create a new {type}.
-            </DialogDescription>
-          </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">
@@ -120,31 +119,31 @@ export function AddEventDialog({ type }: AddEventDialogProps) {
               <Input id="title" name="title" className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="date" className="text-right">
-                    Date
-                </Label>
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                        variant={"outline"}
-                        className={cn(
-                            "col-span-3 justify-start text-left font-normal",
-                            !date && "text-muted-foreground"
-                        )}
-                        >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                        <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        initialFocus
-                        />
-                    </PopoverContent>
-                </Popover>
+              <Label htmlFor="date" className="text-right">
+                Date
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "col-span-3 justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="time" className="text-right">
@@ -153,12 +152,12 @@ export function AddEventDialog({ type }: AddEventDialogProps) {
               <Input id="time" name="time" type="time" className="col-span-3" required />
             </div>
             {type === 'meeting' && (
-                 <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="meetingLink" className="text-right">
-                        Meeting Link
-                    </Label>
-                    <Input id="meetingLink" name="meetingLink" type="url" placeholder="https://meet.google.com/..." className="col-span-3" />
-                </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="meetingLink" className="text-right">
+                  Meeting Link
+                </Label>
+                <Input id="meetingLink" name="meetingLink" type="url" placeholder="https://meet.google.com/..." className="col-span-3" />
+              </div>
             )}
           </div>
           <DialogFooter>
@@ -178,3 +177,4 @@ export function AddEventDialog({ type }: AddEventDialogProps) {
     </Dialog>
   );
 }
+

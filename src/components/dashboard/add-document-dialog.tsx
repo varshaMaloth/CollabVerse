@@ -44,7 +44,7 @@ export function AddDocumentDialog() {
     const formData = new FormData(event.currentTarget);
     const title = formData.get('title') as string;
     const url = formData.get('url') as string;
-    
+
     const newDoc = {
       title,
       url,
@@ -53,7 +53,7 @@ export function AddDocumentDialog() {
     };
 
     const docsCollectionRef = collection(firestore, 'documents');
-    
+
     addDoc(docsCollectionRef, newDoc)
       .then(() => {
         toast({
@@ -85,13 +85,13 @@ export function AddDocumentDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add New Document</DialogTitle>
+          <DialogDescription>
+            Fill out the details below to link a new document.
+          </DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Add New Document</DialogTitle>
-            <DialogDescription>
-              Fill out the details below to link a new document.
-            </DialogDescription>
-          </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">
@@ -99,7 +99,7 @@ export function AddDocumentDialog() {
               </Label>
               <Input id="title" name="title" className="col-span-3" required />
             </div>
-             <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="url" className="text-right">
                 URL
               </Label>
@@ -123,3 +123,4 @@ export function AddDocumentDialog() {
     </Dialog>
   );
 }
+
